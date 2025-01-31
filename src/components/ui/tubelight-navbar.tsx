@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { LucideIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { ModeToggle } from "./mode-toggle";
+import { useTheme } from "./theme-provider";
 
 interface NavItem {
   name: string;
@@ -18,6 +19,7 @@ interface NavBarProps {
 export function NavBar({ items, className }: NavBarProps) {
   const [activeTab, setActiveTab] = useState(items[0].name);
   const [isMobile, setIsMobile] = useState(false);
+  const { theme } = useTheme(); // Get the current theme
 
   useEffect(() => {
     const handleResize = () => {
@@ -37,7 +39,28 @@ export function NavBar({ items, className }: NavBarProps) {
       )}
     >
       <div className="flex items-center gap-3 bg-white/5 border border-neutral-200 backdrop-blur-lg py-1 px-1 rounded-full shadow-lg dark:bg-neutral-950/5 dark:border-neutral-800">
+        {/* Zen Logo with automatic color reversal in dark mode */}
+        <a
+          href="/" // Link to home or any other URL
+          className="flex items-center justify-center p-2 rounded-full hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors"
+        >
+          <img
+            src="https://images.zen.com.tn/medias/images/logo_zen.png"
+            alt="Zen Logo"
+            className={cn(
+              "w-8 h-8 object-contain",
+              theme === "dark" && "invert" // Apply invert filter in dark mode
+            )}
+          />
+        </a>
+
+        {/* Rest of the navigation items */}
         {items.map((item) => {
+          // Hide "Done By Yassine" on mobile
+          if (isMobile && item.name === "Done By Yassine") {
+            return null;
+          }
+
           const Icon = item.icon;
           const isActive = activeTab === item.name;
 
